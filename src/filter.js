@@ -1,6 +1,6 @@
-const pathToRegexp = require('path-to-regexp');
+import pathToRegexp from 'path-to-regexp';
 
-class Filter {
+export default class Filter {
   constructor(path = '', callback) {
     this.path = path;
     this.callback = callback;
@@ -18,5 +18,3 @@ class Filter {
     next();
   }
 }
-
-module.exports = Filter;

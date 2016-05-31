@@ -1,4 +1,4 @@
-module.exports = (logger) => {
+export default function errorHandler(logger) {
   return (error, request, response) => {
     const match = error.message.match(/(\d{3})\s(.*)/);
 
@@ -27,4 +27,4 @@ module.exports = (logger) => {
       logger.error(message);
     }
   };
-};
+}

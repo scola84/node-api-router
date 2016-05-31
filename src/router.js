@@ -1,11 +1,12 @@
-const events = require('events');
-const pathToRegexp = require('path-to-regexp');
-const series = require('async-series');
-const matchVersion = require('./helper/match-version');
-const Filter = require('./filter');
-const Route = require('./route');
+import EventEmitter from '@scola/events';
+import pathToRegexp from 'path-to-regexp';
+import series from 'async-series';
+import matchVersion from './helper/match-version';
 
-class Router extends events.EventEmitter {
+import Filter from './filter';
+import Route from './route';
+
+export default class Router extends EventEmitter {
   constructor(url = '') {
     super();
 
@@ -97,5 +98,3 @@ class Router extends events.EventEmitter {
     this.emit('error', new Error(message), request, response);
   }
 }
-
-module.exports = Router;

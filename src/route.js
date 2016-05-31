@@ -1,8 +1,8 @@
-const pathToRegexp = require('path-to-regexp');
-const series = require('async-series');
-const matchVersion = require('./helper/match-version');
+import pathToRegexp from 'path-to-regexp';
+import series from 'async-series';
+import matchVersion from './helper/match-version';
 
-class Route {
+export default class Route {
   constructor(method, url, handlers) {
     const [path, version = ''] = url.split('@');
 
@@ -50,5 +50,3 @@ class Route {
     return next();
   }
 }
-
-module.exports = Route;

@@ -1,6 +1,6 @@
-const semver = require('semver');
+import { satisfies } from 'semver';
 
-module.exports = (request, version) => {
+export default function matchVersion(request, version) {
   if (!version) {
     return true;
   }
@@ -13,5 +13,5 @@ module.exports = (request, version) => {
     return false;
   }
 
-  return semver.satisfies(version, request.version);
-};
+  return satisfies(version, request.version);
+}
