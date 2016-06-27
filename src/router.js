@@ -12,17 +12,17 @@ export default class Router extends EventEmitter {
 
     const [path, version = ''] = url.split('@');
 
-    this.path = path;
-    this.version = version;
+    this._path = path;
+    this._version = version;
 
-    this.keys = [];
-    this.layers = [];
-    this.regexp = pathToRegexp(path + '*', this.keys);
+    this._keys = [];
+    this._layers = [];
+    this._regexp = pathToRegexp(path + '*', this._keys);
   }
 
   mount(path) {
-    const router = new Router(this.path + path, this);
-    this.layers.push(router);
+    const router = new Router(this._path + path, this);
+    this._layers.push(router);
 
     return router;
   }
@@ -33,58 +33,58 @@ export default class Router extends EventEmitter {
       path = '';
     }
 
-    const filter = new Filter(this.path + path, callback);
-    this.layers.push(filter);
+    const filter = new Filter(this._path + path, callback);
+    this._layers.push(filter);
 
     return filter;
   }
 
   get(...args) {
-    return this.route('GET', ...args);
+    return this._route('GET', ...args);
   }
 
   post(...args) {
-    return this.route('POST', ...args);
+    return this._route('POST', ...args);
   }
 
   put(...args) {
-    return this.route('PUT', ...args);
+    return this._route('PUT', ...args);
   }
 
   delete(...args) {
-    return this.route('DELETE', ...args);
-  }
-
-  route(method, path, ...callbacks) {
-    const route = new Route(method, this.path + path, callbacks);
-    this.layers.push(route);
-
-    return route;
+    return this._route('DELETE', ...args);
   }
 
   handleRequest(request, response) {
     const requestLine = request.method + ' ' + request.url;
 
-    this.handle(request, response, (error) => {
+    this._handle(request, response, (error) => {
       if (error) {
-        this.emitError(error.message, request, response);
+        this._emitError(error.message, request, response);
       } else if (!request.matchedPath) {
-        this.emitError('404 Route ' + requestLine, request, response);
+        this._emitError('404 Route ' + requestLine, request, response);
       } else if (!request.matchedMethod) {
         response.setHeader('Allow', request.allowedMethods.join(', '));
-        this.emitError('405 Method ' + requestLine, request, response);
+        this._emitError('405 Method ' + requestLine, request, response);
       } else if (!request.matchedVersion) {
-        this.emitError('404 Version ' + requestLine, request, response);
+        this._emitError('404 Version ' + requestLine, request, response);
       }
     });
   }
 
-  handle(request, response, next) {
-    const match = this.regexp.exec(request.path) &&
-      matchVersion(request, this.version);
+  _route(method, path, ...callbacks) {
+    const route = new Route(method, this._path + path, callbacks);
+    this._layers.push(route);
+
+    return route;
+  }
+
+  _handle(request, response, next) {
+    const match = this._regexp.exec(request.path) &&
+      matchVersion(request, this._version);
 
     if (match) {
-      return series(this.layers.map((layer) => {
+      return series(this._layers.map((layer) => {
         return (callback) => {
           layer.handle(request, response, callback);
         };
@@ -94,7 +94,7 @@ export default class Router extends EventEmitter {
     return next && next();
   }
 
-  emitError(message, request, response) {
+  _emitError(message, request, response) {
     this.emit('error', new Error(message), request, response);
   }
 }

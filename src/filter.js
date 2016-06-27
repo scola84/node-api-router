@@ -2,16 +2,16 @@ import pathToRegexp from 'path-to-regexp';
 
 export default class Filter {
   constructor(path = '', callback) {
-    this.path = path;
-    this.callback = callback;
-    this.regexp = pathToRegexp(path + '*', this.keys);
+    this._path = path;
+    this._callback = callback;
+    this._regexp = pathToRegexp(path + '*');
   }
 
   handle(request, response, next) {
-    const match = this.regexp.exec(request.path);
+    const match = this._regexp.exec(request.path);
 
     if (match) {
-      this.callback(request, response, next);
+      this._callback(request, response, next);
       return;
     }
 
