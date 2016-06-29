@@ -1,4 +1,4 @@
-import EventEmitter from '@scola/events';
+import EventEmitter from 'events';
 import pathToRegexp from 'path-to-regexp';
 import series from 'async-series';
 import matchVersion from './helper/match-version';
