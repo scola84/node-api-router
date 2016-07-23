@@ -1,7 +1,7 @@
 import pathToRegexp from 'path-to-regexp';
 
 export default class Filter {
-  constructor(path = '', callback) {
+  constructor(path, callback) {
     this._path = path;
     this._callback = callback;
     this._regexp = pathToRegexp(path + '*');
