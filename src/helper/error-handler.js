@@ -6,7 +6,7 @@ export default function errorHandler(logger) {
       const status = Number(match[1]);
       let message = match[1];
 
-      if (match[2] && status === 400) {
+      if (match[2] && status < 500) {
         message += ' ' + match[2];
       }
 
