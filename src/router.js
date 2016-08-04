@@ -64,18 +64,11 @@ export default class Router extends EventEmitter {
   }
 
   handleRequest(request, response) {
-    const requestLine = request.method + ' ' + request.url;
-
     this._handle(request, response, (error) => {
+      error = error || this._error(request, response);
+
       if (error) {
-        this._emitError(error.message, request, response);
-      } else if (!request.matchedPath) {
-        this._emitError('404 Route ' + requestLine, request, response);
-      } else if (!request.matchedMethod) {
-        response.setHeader('Allow', request.allowedMethods.join(', '));
-        this._emitError('405 Method ' + requestLine, request, response);
-      } else if (!request.matchedVersion) {
-        this._emitError('404 Version ' + requestLine, request, response);
+        this.emit('error', error, request, response);
       }
     });
   }
@@ -102,7 +95,22 @@ export default class Router extends EventEmitter {
     return next && next();
   }
 
-  _emitError(message, request, response) {
-    this.emit('error', new Error(message), request, response);
+  _error(request, response) {
+    let error = null;
+
+    if (!request.matchedPath) {
+      error = new Error('404 invalid_path');
+    } else if (!request.matchedMethod) {
+      response.setHeader('Allow', request.allowedMethods.join(', '));
+      error = new Error('404 invalid_method');
+    } else if (!request.matchedVersion) {
+      error = new Error('404 invalid_version');
+    }
+
+    if (error) {
+      error.message += ' ' + request.method + ' ' + request.url;
+    }
+
+    return error;
   }
 }

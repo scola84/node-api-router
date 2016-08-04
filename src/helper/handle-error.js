@@ -1,15 +1,15 @@
 export default function errorHandler(error, request, response) {
-  const match = error.message.match(/(\d{3})\s(\w*)(\s(.*))?/);
+  const match = error.message.match(/((\d{3})\s+\w+)(.*)?/);
 
-  if (!match) {
+  if (!match || !match[2]) {
     return;
   }
 
-  const status = Number(match[1]);
-  let message = match[2];
+  const status = Number(match[2]);
+  let message = match[1];
 
-  if (match[4] && status < 500) {
-    message += ' ' + match[4];
+  if (match[3] && status < 500) {
+    message += match[3];
   }
 
   response.clear();
