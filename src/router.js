@@ -1,8 +1,8 @@
 import EventEmitter from 'events';
 import pathToRegexp from 'path-to-regexp';
 import series from 'async-series';
+import { ScolaError } from '@scola/error';
 import matchVersion from './helper/match-version';
-
 import Filter from './filter';
 import Route from './route';
 
@@ -99,12 +99,12 @@ export default class Router extends EventEmitter {
     let error = null;
 
     if (!request.matchedPath) {
-      error = new Error('404 invalid_path');
+      error = new ScolaError('404 invalid_path');
     } else if (!request.matchedMethod) {
       response.setHeader('Allow', request.allowedMethods.join(', '));
-      error = new Error('404 invalid_method');
+      error = new ScolaError('404 invalid_method');
     } else if (!request.matchedVersion) {
-      error = new Error('404 invalid_version');
+      error = new ScolaError('404 invalid_version');
     }
 
     if (error) {
