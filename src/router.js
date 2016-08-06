@@ -81,7 +81,7 @@ export default class Router extends EventEmitter {
   }
 
   _handle(request, response, next) {
-    const match = this._regexp.exec(request.path) &&
+    const match = this._regexp.exec(request.path()) &&
       matchVersion(request, this._version);
 
     if (match) {
@@ -98,17 +98,17 @@ export default class Router extends EventEmitter {
   _error(request, response) {
     let error = null;
 
-    if (!request.matchedPath) {
+    if (!request.match('path')) {
       error = new ScolaError('404 invalid_path');
-    } else if (!request.matchedMethod) {
-      response.setHeader('Allow', request.allowedMethods.join(', '));
+    } else if (!request.match('method')) {
+      response.header('Allow', request.allow().join(', '));
       error = new ScolaError('404 invalid_method');
-    } else if (!request.matchedVersion) {
+    } else if (!request.match('version')) {
       error = new ScolaError('404 invalid_version');
     }
 
     if (error) {
-      error.message += ' ' + request.method + ' ' + request.url;
+      error.message += ' ' + request.method() + ' ' + request.url();
     }
 
     return error;

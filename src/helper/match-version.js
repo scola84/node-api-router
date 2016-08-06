@@ -5,13 +5,13 @@ export default function matchVersion(request, version) {
     return true;
   }
 
-  if (!request.version) {
+  if (!request.version()) {
     return false;
   }
 
-  if (request.matchedVersion) {
+  if (request.match('version')) {
     return false;
   }
 
-  return satisfies(version, request.version);
+  return satisfies(version, request.version());
 }

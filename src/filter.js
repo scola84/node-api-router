@@ -8,7 +8,7 @@ export default class Filter {
   }
 
   handle(request, response, next) {
-    const match = this._regexp.exec(request.path);
+    const match = this._regexp.exec(request.path());
 
     if (match) {
       this._callback(request, response, next);

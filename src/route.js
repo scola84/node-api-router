@@ -15,20 +15,20 @@ export default class Route {
   }
 
   handle(request, response, next) {
-    request.allowedMethods.push(this._method);
-    const matchedPath = this._regexp.exec(request.path);
+    request.allow(this._method);
+    const matchedPath = this._regexp.exec(request.path());
 
     if (!matchedPath ||
-      request.method !== this._method ||
+      request.method() !== this._method ||
       !matchVersion(request, this._version)) {
 
       return next();
     }
 
-    request.matchedPath = this._path;
-    request.matchedMethod = this._method;
-    request.matchedVersion = this._version || '*';
-    request.params = this._createParams(this._keys, matchedPath);
+    request.match('path', this._path);
+    request.match('method', this._method);
+    request.match('version', this._version || '*');
+    request.params(this._createParams(this._keys, matchedPath));
 
     return series(this._handlers.map((handler) => {
       return (callback) => {

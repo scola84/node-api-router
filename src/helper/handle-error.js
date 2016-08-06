@@ -3,9 +3,10 @@ export default function errorHandler(error, request, response) {
     return;
   }
 
-  response.clear();
-  response.removeHeader('Content-Type');
-  response.removeHeader('Content-Encoding');
-  response.writeHead(error.status);
-  response.end(error.toString());
+  response
+    .transformer(false)
+    .header('Content-Type', false)
+    .header('Content-Encoding', false)
+    .status(error.status)
+    .end(error.toString());
 }
