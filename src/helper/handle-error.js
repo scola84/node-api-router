@@ -1,9 +1,9 @@
-export default function errorHandler(error, request, response) {
+export default function errorHandler(error) {
   if (!error.status) {
     return;
   }
 
-  response
+  error.response
     .transformer(false)
     .header('Content-Type', false)
     .header('Content-Encoding', false)

@@ -1,7 +1,7 @@
-import EventEmitter from 'events';
 import pathToRegexp from 'path-to-regexp';
 import series from 'async-series';
 import { ScolaError } from '@scola/error';
+import { EventEmitter } from '@scola/events';
 import matchVersion from './helper/match-version';
 import Filter from './filter';
 import Route from './route';
@@ -68,7 +68,10 @@ export default class Router extends EventEmitter {
       error = error || this._error(request, response);
 
       if (error) {
-        this.emit('error', error, request, response);
+        error.request = request;
+        error.response = response;
+
+        this.emit('error', error);
       }
     });
   }
