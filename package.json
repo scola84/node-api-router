@@ -8,12 +8,14 @@
   "main": "./dist/api-router.js",
   "jsnext:main": "index.js",
   "dependencies": {
-    "async-series": "0.0.1",
+    "@scola/error": "^4.0.0",
+    "@scola/events": "^3.0.0",
+    "async": "^2.0.1",
     "path-to-regexp": "^1.5.3",
     "semver": "^5.3.0"
   },
   "devDependencies": {
-    "rollup": "^0.34.13"
+    "rollup": "^0.35.9"
   },
   "scripts": {
     "build": "rollup -i index.js -o ./dist/api-router.js -f cjs"

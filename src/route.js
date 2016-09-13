@@ -1,5 +1,5 @@
 import pathToRegexp from 'path-to-regexp';
-import series from 'async-series';
+import series from 'async/series';
 import matchVersion from './helper/match-version';
 
 export default class Route {

@@ -1,5 +1,5 @@
 import pathToRegexp from 'path-to-regexp';
-import series from 'async-series';
+import series from 'async/series';
 import { ScolaError } from '@scola/error';
 import { EventEmitter } from '@scola/events';
 import matchVersion from './helper/match-version';
