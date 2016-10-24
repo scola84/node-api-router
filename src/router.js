@@ -91,6 +91,11 @@ export default class Router extends EventEmitter {
   }
 
   _route(method, path, ...callbacks) {
+    if (typeof path === 'function') {
+      callbacks = [path, ...callbacks];
+      path = '/';
+    }
+
     const route = new Route(method, this._path + path, callbacks);
     this._layers.push(route);
 
