@@ -7,13 +7,14 @@ import Filter from './filter';
 import Route from './route';
 
 export default class Router extends EventEmitter {
-  constructor(url = '') {
+  constructor(url = '', parent) {
     super();
 
     const [path, version = ''] = url.split('@');
 
     this._path = path;
     this._version = version;
+    this._parent = parent;
 
     this._keys = [];
     this._layers = [];
@@ -63,17 +64,30 @@ export default class Router extends EventEmitter {
     return this._route('PUB', ...args);
   }
 
-  handleRequest(request, response) {
+  handleRequest(request, response, next) {
     this._handle(request, response, (error) => {
-      error = error || this._error(request, response);
+      if (!this._parent) {
+        error = error || this._error(request, response);
+      }
 
       if (error) {
         error.request = request;
         error.response = response;
 
-        this.emit('error', error);
+        return this.emit('error', error);
       }
+
+      return next && next();
     });
+  }
+
+  emit(...args) {
+    if (this._parent) {
+      this._parent.emit(...args);
+      return;
+    }
+
+    super.emit(...args);
   }
 
   _route(method, path, ...callbacks) {
@@ -90,7 +104,7 @@ export default class Router extends EventEmitter {
     if (match) {
       return series(this._layers.map((layer) => {
         return (callback) => {
-          layer.handle(request, response, callback);
+          layer.handleRequest(request, response, callback);
         };
       }), next);
     }

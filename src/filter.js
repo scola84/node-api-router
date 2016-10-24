@@ -7,7 +7,7 @@ export default class Filter {
     this._regexp = pathToRegexp(path + '*');
   }
 
-  handle(request, response, next) {
+  handleRequest(request, response, next) {
     const match = this._regexp.exec(request.path());
 
     if (match) {

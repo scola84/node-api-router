@@ -14,7 +14,7 @@ export default class Route {
     this._regexp = pathToRegexp(path, this._keys);
   }
 
-  handle(request, response, next) {
+  handleRequest(request, response, next) {
     request.allow(this._method);
     const matchedPath = this._regexp.exec(request.path());
 
