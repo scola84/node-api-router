@@ -1,6 +1,6 @@
 {
   "name": "@scola/api-router",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "API Router",
   "repository": "github:scola84/node-api-router",
   "author": "M.C. van den Boogaart <scola@kvdb.name>",
