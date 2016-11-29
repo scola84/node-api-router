@@ -1,5 +1,6 @@
-import pathToRegexp from 'path-to-regexp';
 import series from 'async/series';
+import isEqual from 'lodash-es/isEqual';
+import pathToRegexp from 'path-to-regexp';
 import matchVersion from './helper/match-version';
 
 export default class Route {
@@ -7,11 +8,38 @@ export default class Route {
     const [path, version = ''] = url.split('@');
 
     this._method = method;
+    this._url = url;
     this._path = path;
     this._version = version;
     this._handlers = handlers;
     this._keys = [];
     this._regexp = pathToRegexp(path, this._keys);
+  }
+
+  method() {
+    return this._method;
+  }
+
+  url() {
+    return this._url;
+  }
+
+  path() {
+    return this._path;
+  }
+
+  version() {
+    return this._version;
+  }
+
+  handlers() {
+    return this._handlers;
+  }
+
+  is(method, url, handlers) {
+    return isEqual(this._method, method) &&
+      isEqual(this._url, url) &&
+      isEqual(this._handlers, handlers);
   }
 
   handleRequest(request, response, next) {

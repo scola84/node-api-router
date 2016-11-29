@@ -90,16 +90,29 @@ export default class Router extends EventEmitter {
     super.emit(...args);
   }
 
-  _route(method, path, ...callbacks) {
+  _route(method, path, ...handlers) {
     if (typeof path === 'function') {
-      callbacks = [path, ...callbacks];
+      handlers = [path, ...handlers];
       path = '/';
     }
 
-    const route = new Route(method, this._path + path, callbacks);
+    if (handlers[handlers.length - 1] === false) {
+      this._delete(method, this._path + path, handlers.slice(0, -1));
+      return null;
+    }
+
+    const route = new Route(method, this._path + path, handlers);
     this._layers.push(route);
 
     return route;
+  }
+
+  _delete(method, url, handlers) {
+    for (let i = this._layers.length - 1; i >= 0; i -= 1) {
+      if (this._layers[i].is(method, url, handlers)) {
+        this._layers.splice(i, 1);
+      }
+    }
   }
 
   _handle(request, response, next) {
