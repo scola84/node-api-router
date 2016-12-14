@@ -1,7 +1,7 @@
 import series from 'async/series';
 import { EventEmitter } from 'events';
 import pathToRegexp from 'path-to-regexp';
-import { ScolaError } from '@scola/error';
+import { ScolaError } from '@scola/core';
 import matchVersion from './helper/match-version';
 import Filter from './filter';
 import Route from './route';

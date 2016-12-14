@@ -5,7 +5,7 @@ export default {
   entry: 'index.js',
   format: 'cjs',
   external: [
-    '@scola/error',
+    '@scola/core',
     'async/series',
     'events',
     'lodash-es/isEqual',
