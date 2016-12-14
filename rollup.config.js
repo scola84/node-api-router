@@ -8,6 +8,7 @@ export default {
     '@scola/error',
     'async/series',
     'events',
+    'lodash-es/isEqual',
     'path-to-regexp',
     'semver'
   ],
