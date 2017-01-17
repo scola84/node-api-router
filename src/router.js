@@ -1,28 +1,76 @@
 import series from 'async/series';
 import { EventEmitter } from 'events';
 import pathToRegexp from 'path-to-regexp';
-import { ScolaError } from '@scola/core';
+import { ScolaError } from '@scola/error';
 import matchVersion from './helper/match-version';
 import Filter from './filter';
 import Route from './route';
 
 export default class Router extends EventEmitter {
-  constructor(url = '', parent) {
+  constructor() {
     super();
 
-    const [path, version = ''] = url.split('@');
-
-    this._path = path;
-    this._version = version;
-    this._parent = parent;
+    this._url = null;
+    this._path = null;
+    this._version = null;
+    this._parent = null;
 
     this._keys = [];
+    this._regexp = null;
     this._layers = [];
-    this._regexp = pathToRegexp(path + '*', this._keys);
+
+    this.url('');
+  }
+
+  url(value = null) {
+    if (value === null) {
+      return this._url;
+    }
+
+    this._url = value;
+
+    const [path, version = ''] = this._url.split('@');
+
+    this.path(path);
+    this.version(version);
+
+    return this;
+  }
+
+  path(value = null) {
+    if (value === null) {
+      return this._path;
+    }
+
+    this._path = value;
+    this._regexp = pathToRegexp(this._path + '*', this._keys);
+
+    return this;
+  }
+
+  version(value = null) {
+    if (value === null) {
+      return this._version;
+    }
+
+    this._version = value;
+    return this;
+  }
+
+  parent(value = null) {
+    if (value === null) {
+      return this._parent;
+    }
+
+    this._parent = value;
+    return this;
   }
 
   mount(path) {
-    const router = new Router(this._path + path, this);
+    const router = new Router()
+      .url(this._path + path)
+      .parent(this);
+
     this._layers.push(router);
 
     return router;
@@ -34,7 +82,10 @@ export default class Router extends EventEmitter {
       path = '';
     }
 
-    const filter = new Filter(this._path + path, callback);
+    const filter = new Filter()
+      .path(this._path + path)
+      .callback(callback);
+
     this._layers.push(filter);
 
     return filter;
@@ -101,7 +152,11 @@ export default class Router extends EventEmitter {
       return null;
     }
 
-    const route = new Route(method, this._path + path, handlers);
+    const route = new Route()
+      .method(method)
+      .path(this._path + path)
+      .handlers(handlers);
+
     this._layers.push(route);
 
     return route;

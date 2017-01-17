@@ -8,7 +8,6 @@
   "main": "./dist/api-router.js",
   "jsnext:main": "index.js",
   "dependencies": {
-    "@scola/core": "^1.2.0",
     "async": "^2.1.4",
     "lodash-es": "^4.17.2",
     "path-to-regexp": "^1.7.0",

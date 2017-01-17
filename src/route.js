@@ -4,36 +4,67 @@ import pathToRegexp from 'path-to-regexp';
 import matchVersion from './helper/match-version';
 
 export default class Route {
-  constructor(method, url, handlers) {
-    const [path, version = ''] = url.split('@');
-
-    this._method = method;
-    this._url = url;
-    this._path = path;
-    this._version = version;
-    this._handlers = handlers;
+  constructor() {
+    this._method = null;
+    this._url = null;
+    this._path = null;
+    this._version = null;
+    this._handlers = null;
     this._keys = [];
-    this._regexp = pathToRegexp(path, this._keys);
+    this._regexp = null;
   }
 
-  method() {
-    return this._method;
+  method(value = null) {
+    if (value === null) {
+      return this._method;
+    }
+
+    this._method = value;
+    return this;
   }
 
-  url() {
-    return this._url;
+  url(value = null) {
+    if (value === null) {
+      return this._url;
+    }
+
+    this._url = value;
+
+    const [path, version = ''] = this._url.split('@');
+
+    this._path(path);
+    this._version(version);
+
+    return this;
   }
 
-  path() {
-    return this._path;
+  path(value = null) {
+    if (value === null) {
+      return this._path;
+    }
+
+    this._path = value;
+    this._regexp = pathToRegexp(this._path, this._keys);
+
+    return this;
   }
 
-  version() {
-    return this._version;
+  version(value = null) {
+    if (value === null) {
+      return this._version;
+    }
+
+    this._version = value;
+    return this;
   }
 
-  handlers() {
-    return this._handlers;
+  handlers(value = null) {
+    if (value === null) {
+      return this._handlers;
+    }
+
+    this._handlers = value;
+    return this;
   }
 
   is(method, url, handlers) {
