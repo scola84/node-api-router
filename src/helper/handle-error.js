@@ -5,7 +5,7 @@ export default function handleError() {
     }
 
     error.response
-      .transformer(false)
+      .codec(false)
       .header('Content-Type', false)
       .header('Content-Encoding', false)
       .status(error.status)
