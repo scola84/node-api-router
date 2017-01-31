@@ -91,7 +91,11 @@ export default class Route {
 
     return series(this._handlers.map((handler) => {
       return (callback) => {
-        handler(request, response, callback);
+        try {
+          handler(request, response, callback);
+        } catch (error) {
+          next(error);
+        }
       };
     }), next);
   }
