@@ -1,6 +1,7 @@
 import series from 'async/series';
 import { EventEmitter } from 'events';
 import pathToRegexp from 'path-to-regexp';
+import { debuglog } from 'util';
 import { ScolaError } from '@scola/error';
 import matchVersion from './helper/match-version';
 import Filter from './filter';
@@ -9,6 +10,8 @@ import Route from './route';
 export default class Router extends EventEmitter {
   constructor() {
     super();
+
+    this._log = debuglog('router');
 
     this._url = null;
     this._path = null;
@@ -72,7 +75,6 @@ export default class Router extends EventEmitter {
       .parent(this);
 
     this._layers.push(router);
-
     return router;
   }
 
@@ -87,7 +89,6 @@ export default class Router extends EventEmitter {
       .callback(callback);
 
     this._layers.push(filter);
-
     return filter;
   }
 
@@ -116,6 +117,9 @@ export default class Router extends EventEmitter {
   }
 
   handleRequest(request, response, next) {
+    this._log('Router handleRequest %s %s (%s)', request.method(),
+      request.path(), this._path);
+
     this._handle(request, response, (error) => {
       if (!this._parent) {
         error = error || this._error(request, response);
@@ -158,7 +162,6 @@ export default class Router extends EventEmitter {
       .handlers(handlers);
 
     this._layers.push(route);
-
     return route;
   }
 

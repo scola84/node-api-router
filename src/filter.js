@@ -1,7 +1,10 @@
 import pathToRegexp from 'path-to-regexp';
+import { debuglog } from 'util';
 
 export default class Filter {
   constructor() {
+    this._log = debuglog('router');
+
     this._path = null;
     this._callback = null;
     this._regexp = null;
@@ -28,6 +31,9 @@ export default class Filter {
   }
 
   handleRequest(request, response, next) {
+    this._log('Filter handleRequest %s %s (%s)', request.method(),
+      request.path(), this._path);
+
     const match = this._regexp.exec(request.path());
 
     if (match) {

@@ -1,10 +1,13 @@
 import series from 'async/series';
 import isEqual from 'lodash-es/isEqual';
 import pathToRegexp from 'path-to-regexp';
+import { debuglog } from 'util';
 import matchVersion from './helper/match-version';
 
 export default class Route {
   constructor() {
+    this._log = debuglog('router');
+
     this._method = null;
     this._url = null;
     this._path = null;
@@ -74,6 +77,9 @@ export default class Route {
   }
 
   handleRequest(request, response, next) {
+    this._log('Route handleRequest %s %s (%s %s)', request.method(),
+      request.path(), this._method, this._path);
+
     request.allow(this._method);
     const matchedPath = this._regexp.exec(request.path());
 
