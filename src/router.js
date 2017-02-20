@@ -108,14 +108,6 @@ export default class Router extends EventEmitter {
     return this._route('DELETE', ...args);
   }
 
-  sub(...args) {
-    return this._route('SUB', ...args);
-  }
-
-  pub(...args) {
-    return this._route('PUB', ...args);
-  }
-
   handleRequest(request, response, next) {
     this._log('Router handleRequest %s %s (%s)', request.method(),
       request.path(), this._path);
