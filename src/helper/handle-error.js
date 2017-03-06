@@ -7,7 +7,6 @@ export default function handleError() {
     error.response
       .codec(false)
       .header('Content-Type', false)
-      .header('Content-Encoding', false)
       .status(error.status)
       .end(error.toString());
   };
