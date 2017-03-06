@@ -4,9 +4,8 @@ export default function handleError() {
       return;
     }
 
-    error.response
-      .codec(false)
-      .header('Content-Type', false)
+    error
+      .response
       .status(error.status)
       .end(error.toString());
   };
