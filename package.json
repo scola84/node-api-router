@@ -8,8 +8,9 @@
   "main": "./dist/api-router.js",
   "jsnext:main": "index.js",
   "dependencies": {
-    "async": "^2.1.4",
-    "lodash-es": "^4.17.2",
+    "@scola/error": "^4.3.0",
+    "async": "^2.1.5",
+    "lodash-es": "^4.17.4",
     "path-to-regexp": "^1.7.0",
     "semver": "^5.3.0"
   }
