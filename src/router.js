@@ -181,21 +181,21 @@ export default class Router extends EventEmitter {
   }
 
   _error(request, response) {
-    let error = null;
+    let message = null;
 
     if (!request.match('path')) {
-      error = new ScolaError('404 invalid_path');
+      message = '404 invalid_path';
     } else if (!request.match('method')) {
       response.header('Allow', request.allow().join(', '));
-      error = new ScolaError('404 invalid_method');
+      message = '404 invalid_method';
     } else if (!request.match('version')) {
-      error = new ScolaError('404 invalid_version');
+      message = '404 invalid_version';
     }
 
-    if (error) {
-      error.message += ' ' + request.method() + ' ' + request.url();
+    if (message) {
+      message += ' ' + request.method() + ' ' + request.url();
     }
 
-    return error;
+    return message ? new ScolaError(message) : null;
   }
 }
