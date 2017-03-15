@@ -2,6 +2,7 @@ import series from 'async/series';
 import isEqual from 'lodash-es/isEqual';
 import pathToRegexp from 'path-to-regexp';
 import { debuglog } from 'util';
+import extractData from './helper/extract-data';
 import matchVersion from './helper/match-version';
 
 export default class Route {
@@ -12,7 +13,7 @@ export default class Route {
     this._url = null;
     this._path = null;
     this._version = null;
-    this._handlers = null;
+    this._handlers = [];
     this._keys = [];
     this._regexp = null;
   }
@@ -67,6 +68,11 @@ export default class Route {
     }
 
     this._handlers = value;
+    return this;
+  }
+
+  extract() {
+    this._handlers.unshift(extractData);
     return this;
   }
 
