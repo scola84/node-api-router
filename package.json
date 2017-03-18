@@ -5,8 +5,8 @@
   "repository": "github:scola84/node-api-router",
   "author": "M.C. van den Boogaart <scola@kvdb.name>",
   "license": "MIT",
-  "main": "./dist/api-router.js",
-  "jsnext:main": "index.js",
+  "main": "./index.js",
+  "jsnext:main": "./index.js",
   "dependencies": {
     "@scola/error": "^4.3.0",
     "async": "^2.1.5",
