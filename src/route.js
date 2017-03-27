@@ -36,8 +36,8 @@ export default class Route {
 
     const [path, version = ''] = this._url.split('@');
 
-    this._path(path);
-    this._version(version);
+    this.path(path);
+    this.version(version);
 
     return this;
   }
@@ -77,9 +77,9 @@ export default class Route {
   }
 
   is(method, url, handlers) {
-    return isEqual(this._method, method) &&
-      isEqual(this._url, url) &&
-      isEqual(this._handlers, handlers);
+    return isEqual(this._method, method) === true &&
+      isEqual(this._url, url) === true &&
+      isEqual(this._handlers, handlers) === true;
   }
 
   handleRequest(request, response, next) {
@@ -87,21 +87,27 @@ export default class Route {
       request.path(), this._method, this._path);
 
     request.allow(this._method);
+
     const matchedPath = this._regexp.exec(request.path());
+    const matchedVersion = matchVersion(request, this._version);
 
-    if (!matchedPath ||
-      request.method() !== this._method ||
-      !matchVersion(request, this._version)) {
+    const match =
+      matchedPath !== null &&
+      request.method() === this._method &&
+      matchedVersion === true;
 
-      return next();
+    if (match === false) {
+      next();
+      return;
     }
 
     request.match('path', this._path);
     request.match('method', this._method);
     request.match('version', this._version || '*');
+
     request.params(this._createParams(this._keys, matchedPath));
 
-    return series(this._handlers.map((handler) => {
+    series(this._handlers.map((handler) => {
       return (callback) => {
         try {
           handler(request, response, callback);

@@ -17,7 +17,7 @@ export default function extractData(request, response, next) {
 
     if (chunks.length === 1) {
       data = chunks[0];
-    } else if (Buffer.isBuffer(chunks[0])) {
+    } else if (Buffer.isBuffer(chunks[0]) === true) {
       data = Buffer.concat(chunks);
     } else {
       data = chunks.join('');

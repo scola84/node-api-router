@@ -1,6 +1,6 @@
 export default function handleError() {
   return (error) => {
-    if (!error.status) {
+    if (typeof error.status === 'undefined') {
       return;
     }
 

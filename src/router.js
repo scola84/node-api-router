@@ -112,33 +112,34 @@ export default class Router extends EventEmitter {
     return new ScolaError(message);
   }
 
-  handleRequest(request, response, next) {
+  handleRequest(request, response, next = () => {}) {
     this._log('Router handleRequest %s %s (%s)', request.method(),
       request.path(), this._path);
 
     this._handle(request, response, (error) => {
-      if (!this._parent) {
+      if (this._parent === null) {
         error = error || this._error(request, response);
       }
 
-      if (error) {
+      if (error instanceof Error === true) {
         error.request = request;
         error.response = response;
 
-        return this.emit('error', error);
+        this.emit('error', error);
+        return;
       }
 
-      return next && next();
+      next();
     });
   }
 
   emit(...args) {
-    if (this._parent) {
-      this._parent.emit(...args);
+    if (this._parent === null) {
+      super.emit(...args);
       return;
     }
 
-    super.emit(...args);
+    this._parent.emit(...args);
   }
 
   _route(method, path, ...handlers) {
@@ -154,7 +155,7 @@ export default class Router extends EventEmitter {
 
     const route = new Route()
       .method(method)
-      .path(this._path + path)
+      .url(this._path + path)
       .handlers(handlers);
 
     this._layers.push(route);
@@ -163,43 +164,49 @@ export default class Router extends EventEmitter {
 
   _delete(method, url, handlers) {
     for (let i = this._layers.length - 1; i >= 0; i -= 1) {
-      if (this._layers[i].is(method, url, handlers)) {
+      if (this._layers[i].is(method, url, handlers) === true) {
         this._layers.splice(i, 1);
       }
     }
   }
 
-  _handle(request, response, next) {
-    const match = this._regexp.exec(request.path()) &&
-      matchVersion(request, this._version);
+  _handle(request, response, next = () => {}) {
+    const match =
+      this._regexp.exec(request.path()) !== null &&
+      matchVersion(request, this._version) === true;
 
-    if (match) {
-      return series(this._layers.map((layer) => {
-        return (callback) => {
-          layer.handleRequest(request, response, callback);
-        };
-      }), next);
+    if (match === false) {
+      next();
+      return;
     }
 
-    return next && next();
+    series(this._layers.map((layer) => {
+      return (callback) => {
+        layer.handleRequest(request, response, callback);
+      };
+    }), next);
   }
 
   _error(request, response) {
     let message = null;
 
-    if (!request.match('path')) {
+    if (request.match('path') === null) {
       message = '404 invalid_path';
-    } else if (!request.match('method')) {
+    } else if (request.match('method') === null) {
       response.header('Allow', request.allow().join(', '));
       message = '404 invalid_method';
-    } else if (!request.match('version')) {
+    } else if (request.match('version') === null) {
       message = '404 invalid_version';
     }
 
-    if (message) {
-      message += ' ' + request.method() + ' ' + request.url();
+    if (message === null) {
+      return null;
     }
 
-    return message ? new ScolaError(message) : null;
+    return new ScolaError(
+      message + ' ' +
+      request.method() + ' ' +
+      request.url()
+    );
   }
 }

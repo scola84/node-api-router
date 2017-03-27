@@ -1,15 +1,15 @@
 import { satisfies } from 'semver';
 
-export default function matchVersion(request, version) {
-  if (!version) {
+export default function matchVersion(request, version = '') {
+  if (version.length === 0) {
     return true;
   }
 
-  if (!request.version()) {
+  if (request.version().length === 0) {
     return false;
   }
 
-  if (request.match('version')) {
+  if (request.match('version') !== null) {
     return false;
   }
 

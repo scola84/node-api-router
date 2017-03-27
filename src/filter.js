@@ -36,11 +36,11 @@ export default class Filter {
 
     const match = this._regexp.exec(request.path());
 
-    if (match) {
-      this._callback(request, response, next);
+    if (match === null) {
+      next();
       return;
     }
 
-    next();
+    this._callback(request, response, next);
   }
 }
