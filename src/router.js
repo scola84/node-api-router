@@ -78,15 +78,15 @@ export default class Router extends EventEmitter {
     return router;
   }
 
-  filter(path, callback) {
+  filter(path, ...handlers) {
     if (typeof path === 'function') {
-      callback = path;
+      handlers.unshift(path);
       path = '';
     }
 
     const filter = new Filter()
       .path(this._path + path)
-      .callback(callback);
+      .handlers(handlers);
 
     this._layers.push(filter);
     return filter;

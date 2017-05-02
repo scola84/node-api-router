@@ -1,3 +1,4 @@
+import series from 'async/series';
 import pathToRegexp from 'path-to-regexp';
 import { debuglog } from 'util';
 
@@ -6,7 +7,7 @@ export default class Filter {
     this._log = debuglog('router');
 
     this._path = null;
-    this._callback = null;
+    this._handlers = [];
     this._regexp = null;
   }
 
@@ -21,12 +22,12 @@ export default class Filter {
     return this;
   }
 
-  callback(value = null) {
+  handlers(value = null) {
     if (value === null) {
-      return this._callback;
+      return this._handlers;
     }
 
-    this._callback = value;
+    this._handlers = value;
     return this;
   }
 
@@ -41,6 +42,14 @@ export default class Filter {
       return;
     }
 
-    this._callback(request, response, next);
+    series(this._handlers.map((handler) => {
+      return (callback) => {
+        try {
+          handler(request, response, callback);
+        } catch (error) {
+          next(error);
+        }
+      };
+    }), next);
   }
 }
