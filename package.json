@@ -9,7 +9,7 @@
   "jsnext:main": "./index.js",
   "dependencies": {
     "@scola/error": "^5.0.0",
-    "async": "^2.3.0",
+    "async": "^2.4.0",
     "lodash-es": "^4.17.4",
     "path-to-regexp": "^1.7.0",
     "semver": "^5.3.0"
