@@ -83,8 +83,8 @@ export default class Route {
   }
 
   handleRequest(request, response, next) {
-    this._log('Route handleRequest %s %s (%s %s)', request.method(),
-      request.path(), this._method, this._path);
+    this._log('Route handleRequest method=%s path=%s method=%s path=%s',
+      request.method(), request.path(), this._method, this._path);
 
     request.allow(this._method);
 

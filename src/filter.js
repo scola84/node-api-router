@@ -32,8 +32,8 @@ export default class Filter {
   }
 
   handleRequest(request, response, next) {
-    this._log('Filter handleRequest %s %s (%s)', request.method(),
-      request.path(), this._path);
+    this._log('Filter handleRequest method=%s path=%s path=%s',
+      request.method(), request.path(), this._path);
 
     const match = this._regexp.exec(request.path());
 

@@ -84,6 +84,9 @@ export default class Router extends EventEmitter {
       path = '';
     }
 
+    this._log('Router filter path=%s #handlers=%d',
+      path, handlers.length);
+
     const filter = new Filter()
       .path(this._path + path)
       .handlers(handlers);
@@ -113,8 +116,8 @@ export default class Router extends EventEmitter {
   }
 
   handleRequest(request, response, next = () => {}) {
-    this._log('Router handleRequest %s %s (%s)', request.method(),
-      request.path(), this._path);
+    this._log('Router handleRequest method=%s path=%s path=%s',
+      request.method(), request.path(), this._path);
 
     this._handle(request, response, (error) => {
       if (this._parent === null) {
@@ -147,6 +150,9 @@ export default class Router extends EventEmitter {
       handlers = [path, ...handlers];
       path = '/';
     }
+
+    this._log('Router _route method=%s path=%s #handlers=%d',
+      method, path, handlers.length);
 
     if (handlers[handlers.length - 1] === false) {
       this._delete(method, this._path + path, handlers.slice(0, -1));
