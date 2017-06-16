@@ -111,10 +111,6 @@ export default class Router extends EventEmitter {
     return this._route('DELETE', ...args);
   }
 
-  error(message) {
-    return new ScolaError(message);
-  }
-
   handleRequest(request, response, next = () => {}) {
     this._log('Router handleRequest method=%s path=%s path=%s',
       request.method(), request.path(), this._path);
