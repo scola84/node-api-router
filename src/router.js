@@ -96,19 +96,42 @@ export default class Router extends EventEmitter {
   }
 
   get(...args) {
-    return this._route('GET', ...args);
+    return this.route('GET', ...args);
   }
 
   post(...args) {
-    return this._route('POST', ...args);
+    return this.route('POST', ...args);
   }
 
   put(...args) {
-    return this._route('PUT', ...args);
+    return this.route('PUT', ...args);
   }
 
   delete(...args) {
-    return this._route('DELETE', ...args);
+    return this.route('DELETE', ...args);
+  }
+
+  route(method, path, ...handlers) {
+    if (typeof path === 'function') {
+      handlers = [path, ...handlers];
+      path = '/';
+    }
+
+    this._log('Router _route method=%s path=%s #handlers=%d',
+      method, path, handlers.length);
+
+    if (handlers[handlers.length - 1] === false) {
+      this._delete(method, this._path + path, handlers.slice(0, -1));
+      return null;
+    }
+
+    const route = new Route()
+      .method(method)
+      .url(this._path + path)
+      .handlers(handlers);
+
+    this._layers.push(route);
+    return route;
   }
 
   handleRequest(request, response, next = () => {}) {
@@ -139,29 +162,6 @@ export default class Router extends EventEmitter {
     }
 
     this._parent.emit(...args);
-  }
-
-  _route(method, path, ...handlers) {
-    if (typeof path === 'function') {
-      handlers = [path, ...handlers];
-      path = '/';
-    }
-
-    this._log('Router _route method=%s path=%s #handlers=%d',
-      method, path, handlers.length);
-
-    if (handlers[handlers.length - 1] === false) {
-      this._delete(method, this._path + path, handlers.slice(0, -1));
-      return null;
-    }
-
-    const route = new Route()
-      .method(method)
-      .url(this._path + path)
-      .handlers(handlers);
-
-    this._layers.push(route);
-    return route;
   }
 
   _delete(method, url, handlers) {
