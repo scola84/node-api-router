@@ -9,6 +9,7 @@ export default function handleError() {
     error
       .response
       .status(error.status)
+      .codec(false)
       .header('Content-Length', string.length)
       .end(string);
   };
