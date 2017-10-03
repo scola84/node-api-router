@@ -196,7 +196,7 @@ export default class Router extends EventEmitter {
       message = '404 invalid_path';
     } else if (request.match('method') === null) {
       response.header('Allow', request.allow().join(', '));
-      message = '404 invalid_method';
+      message = '405 invalid_method';
     } else if (request.match('version') === null) {
       message = '404 invalid_version';
     }

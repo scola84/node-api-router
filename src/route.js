@@ -86,24 +86,35 @@ export default class Route {
     this._log('Route handleRequest method=%s path=%s method=%s path=%s',
       request.method(), request.path(), this._method, this._path);
 
-    request.allow(this._method);
-
     const matchedPath = this._regexp.exec(request.path());
+    const matchedMethod = request.method() === this._method;
     const matchedVersion = matchVersion(request, this._version);
 
-    const match =
-      matchedPath !== null &&
-      request.method() === this._method &&
-      matchedVersion === true;
+    let match = true;
+
+    if (matchedPath !== null) {
+      request.match('path', this._path);
+      request.allow(this._method, true);
+    } else {
+      match = false;
+    }
+
+    if (matchedMethod) {
+      request.match('method', this._method);
+    } else {
+      match = false;
+    }
+
+    if (matchedVersion === true) {
+      request.match('version', this._version || '*');
+    } else {
+      match = false;
+    }
 
     if (match === false) {
       next();
       return;
     }
-
-    request.match('path', this._path);
-    request.match('method', this._method);
-    request.match('version', this._version || '*');
 
     request.params(this._createParams(this._keys, matchedPath));
 

@@ -4,13 +4,9 @@ export default function handleError() {
       return;
     }
 
-    const string = error.toString();
-
     error
       .response
       .status(error.status)
-      .codec(false)
-      .header('Content-Length', string.length)
-      .end(string);
+      .end(error);
   };
 }
