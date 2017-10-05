@@ -3,6 +3,7 @@ import isEqual from 'lodash-es/isEqual';
 import pathToRegexp from 'path-to-regexp';
 import { debuglog } from 'util';
 import extractData from './helper/extract-data';
+import matchMethod from './helper/match-method';
 import matchVersion from './helper/match-version';
 
 export default class Route {
@@ -87,7 +88,7 @@ export default class Route {
       request.method(), request.path(), this._method, this._path);
 
     const matchedPath = this._regexp.exec(request.path());
-    const matchedMethod = request.method() === this._method;
+    const matchedMethod = matchMethod(request, this._method);
     const matchedVersion = matchVersion(request, this._version);
 
     let match = true;

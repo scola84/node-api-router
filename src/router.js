@@ -99,6 +99,10 @@ export default class Router extends EventEmitter {
     return this.route('GET', ...args);
   }
 
+  patch(...args) {
+    return this.route('PATCH', ...args);
+  }
+
   post(...args) {
     return this.route('POST', ...args);
   }
@@ -144,6 +148,10 @@ export default class Router extends EventEmitter {
       }
 
       if (error instanceof Error === true) {
+        if (error.status === 405) {
+          response.header('Allow', request.allow().join(', '));
+        }
+
         error.request = request;
         error.response = response;
 
@@ -189,13 +197,12 @@ export default class Router extends EventEmitter {
     }), next);
   }
 
-  _error(request, response) {
+  _error(request) {
     let message = null;
 
     if (request.match('path') === null) {
       message = '404 invalid_path';
     } else if (request.match('method') === null) {
-      response.header('Allow', request.allow().join(', '));
       message = '405 invalid_method';
     } else if (request.match('version') === null) {
       message = '404 invalid_version';
