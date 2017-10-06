@@ -124,7 +124,7 @@ export default class Route {
         try {
           handler(request, response, callback);
         } catch (error) {
-          next(error);
+          console.error(error);
         }
       };
     }), next);
