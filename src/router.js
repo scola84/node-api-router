@@ -212,10 +212,6 @@ export default class Router extends EventEmitter {
       return null;
     }
 
-    return new ScolaError(
-      message + ' ' +
-      request.method() + ' ' +
-      request.url()
-    );
+    return new ScolaError(message);
   }
 }

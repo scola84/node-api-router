@@ -96,18 +96,18 @@ export default class Route {
     if (matchedPath !== null) {
       request.match('path', this._path);
       request.allow(this._method, true);
-    } else {
-      match = false;
-    }
 
-    if (matchedMethod) {
-      request.match('method', this._method);
-    } else {
-      match = false;
-    }
+      if (matchedMethod === true) {
+        request.match('method', this._method);
 
-    if (matchedVersion === true) {
-      request.match('version', this._version || '*');
+        if (matchedVersion === true) {
+          request.match('version', this._version || '*');
+        } else {
+          match = false;
+        }
+      } else {
+        match = false;
+      }
     } else {
       match = false;
     }
